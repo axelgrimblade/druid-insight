@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Druid-Insight</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9"></script>
+</head>
+<body>
+<div id="login-section" class="login-modal">
+  <div class="login-box">
+    <h2>Connexion</h2>
+    <form id="login-form">
+      <label for="user">User name</label>
+      <input type="text" id="login-username" required autocomplete="username">
+      <label for="pass">Password</label>
+      <input type="password" id="login-password" required autocomplete="current-password">
+      <button type="submit">Login</button>
+    </form>
+    <div id="login-error" style="color: red; display: none;"></div>
+  </div>
+</div>
+
+
+
+<div id="dashboard-section" style="display:none">
+  <div class="dashboard">
+    <div class="top-bar">
+      <div class="logo">Druid-Insight</div>
+      <div></div>
+    </div>
+    <div class="section">
+      <div id="dashboard-header">
+        <button id="logout-btn" class="button" style="float: right;">Log out</button>
+        <div id="welcome-user" ></div>
+        <div id="session-timer"></div>
+      </div>
+      <div id="schema-bar">
+        <label for="datasource-select">Datasource:</label>
+        <select id="datasource-select"></select>
+      </div>
+
+      <div class="section-title">Select dimensions and metrics</div>
+      <div class="dim-metric-lists">
+        <div class="list-block">
+          <h3>Dimensions</h3>
+          <div class="list" id="dimensions-list"></div>
+        </div>
+        <div class="list-block">
+          <h3>Metrics</h3>
+          <div class="list" id="metrics-list"></div>
+        </div>
+      </div>
+      <div class="date-block">
+        <label>Period :</label>
+        <input type="date" id="start-date" autocomplete="off"> à
+        <input type="date" id="end-date" autocomplete="off">
+      </div>
+      <div class="compare-block">
+        <label>Compare to :</label>
+        <select id="compare-period">
+          <option value="">--</option>
+          <option value="prev_auto">Automatic</option>
+          <option value="prev_day">Yesterday</option>
+          <option value="prev_week">Last week</option>
+          <option value="prev_month">Last month</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="execute-row">
+      <button class="execute-btn" id="execute-btn">Run query</button>
+      <span id="loading" style="display:none;">⏳ running request...</span>
+    </div>
+    <div class="report-results-list" id="results-list"></div>
+  </div>
+</div>
+
+<div id="filter-popup" class="popup" style="display:none">
+  <div class="popup-content">
+    <h4>Filter <span id="filter-dimension"></span></h4>
+    <div class="popup-search-box">
+      <input type="text" id="popup-search" placeholder="Search for a value...">
+    </div>
+    <div class="popup-values-list" id="popup-values-list"></div>
+    <div class="popup-actions">
+      <button id="popup-ok">Ok</button>
+      <button id="popup-cancel" style="background:#aaa;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+  <script src="js/vars.js"></script>
+  <script src="js/lists.js"></script>
+  <script src="js/login.js"></script>
+  <script src="js/filters.js"></script>
+  <script src="js/execute.js"></script>
+  <script src="js/reports.js"></script>
+  <script src="js/charts.js"></script>
+
+</body>
+</html>
+
