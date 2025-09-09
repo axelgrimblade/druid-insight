@@ -73,16 +73,6 @@ func BuildDruidQuery(dsName string, dims []string, mets []string, userFilters in
 						"format": "yyyy-MM",
 					},
 				})
-			case "day":
-				druidDims = append(druidDims, map[string]interface{}{
-					"type":       "extraction",
-					"dimension":  "__time",
-					"outputName": "time",
-					"extractionFn": map[string]interface{}{
-						"type":   "timeFormat",
-						"format": "yyyy-MM-dd",
-					},
-				})
 			case "hour":
 				druidDims = append(druidDims, map[string]interface{}{
 					"type":       "extraction",
@@ -105,10 +95,15 @@ func BuildDruidQuery(dsName string, dims []string, mets []string, userFilters in
 				})
 			default:
 				druidDims = append(druidDims, map[string]interface{}{
-					"type":       "default",
+					"type":       "extraction",
 					"dimension":  "__time",
 					"outputName": "time",
+					"extractionFn": map[string]interface{}{
+						"type":   "timeFormat",
+						"format": "yyyy-MM-dd",
+					},
 				})
+
 			}
 			continue
 		}
