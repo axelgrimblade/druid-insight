@@ -69,9 +69,8 @@ func BuildDruidQuery(dsName string, dims []string, mets []string, userFilters in
 					"dimension":  "__time",
 					"outputName": "time",
 					"extractionFn": map[string]interface{}{
-						"type":     "timeFormat",
-						"format":   "yyyy-MM",
-						"timeZone": "Europe/Paris",
+						"type":   "timeFormat",
+						"format": "yyyy-MM",
 					},
 				})
 			case "day":
@@ -80,9 +79,8 @@ func BuildDruidQuery(dsName string, dims []string, mets []string, userFilters in
 					"dimension":  "__time",
 					"outputName": "time",
 					"extractionFn": map[string]interface{}{
-						"type":     "timeFormat",
-						"format":   "yyyy-MM-dd",
-						"timeZone": "Europe/Paris",
+						"type":   "timeFormat",
+						"format": "yyyy-MM-dd",
 					},
 				})
 			case "hour":
@@ -91,9 +89,8 @@ func BuildDruidQuery(dsName string, dims []string, mets []string, userFilters in
 					"dimension":  "__time",
 					"outputName": "time",
 					"extractionFn": map[string]interface{}{
-						"type":     "timeFormat",
-						"format":   "yyyy-MM-dd HH",
-						"timeZone": "Europe/Paris",
+						"type":   "timeFormat",
+						"format": "yyyy-MM-dd HH",
 					},
 				})
 			case "week":
@@ -102,9 +99,8 @@ func BuildDruidQuery(dsName string, dims []string, mets []string, userFilters in
 					"dimension":  "__time",
 					"outputName": "time",
 					"extractionFn": map[string]interface{}{
-						"type":     "timeFormat",
-						"format":   "YYYY-'W'ww", // ISO semaine, à adapter selon besoin
-						"timeZone": "Europe/Paris",
+						"type":   "timeFormat",
+						"format": "YYYY-'W'ww", // ISO semaine, à adapter selon besoin
 					},
 				})
 			default:
