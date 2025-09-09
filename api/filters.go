@@ -126,11 +126,23 @@ func GetDimensionValues(cfg *auth.Config, druidCfg *config.DruidConfig) http.Han
 			intervals = []string{filterReq.DateStart + "T00:00:00.000Z/" + filterReq.DateEnd + "T23:59:59.999Z"}
 		}
 
+		var druidDims []interface{}
+		if druidDimension.Lookup != "" {
+			druidDims = append(druidDims, map[string]interface{}{
+				"type":       "lookup",
+				"dimension":  druidDimension.Druid,
+				"outputName": druidDimension.Druid,
+				"name":       druidDimension.Lookup,
+			})
+		} else {
+			druidDims = append(druidDims, druidDimension.Druid)
+		}
+
 		druidQuery := map[string]interface{}{
 			"context":     map[string]string{"application": "druid-insight"},
 			"queryType":   "groupBy",
 			"dataSource":  dsConfig.DruidName,
-			"dimensions":  []string{druidDimension.Druid},
+			"dimensions":  druidDims,
 			"granularity": "all",
 			"intervals":   intervals,
 		}

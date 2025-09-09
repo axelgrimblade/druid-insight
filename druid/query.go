@@ -210,8 +210,9 @@ func ConvertFiltersToDruidDimFilter(filters []interface{}, ds config.DruidDataso
 				"dimension": field.Druid,
 				"values":    svalues,
 				"extractionFn": map[string]interface{}{
-					"type":   "lookup",
-					"lookup": field.Lookup,
+					"type":               "registeredLookup",
+					"lookup":             field.Lookup,
+					"retainMissingValue": true,
 				},
 			})
 		} else {
