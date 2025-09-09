@@ -9,8 +9,9 @@ import (
 )
 
 type DruidConfig struct {
-	HostURL     string                           `yaml:"host_url"`
-	Datasources map[string]DruidDatasourceSchema `yaml:"datasources"`
+	HostURL           string                           `yaml:"host_url"`
+	DefaultDatasource string                           `yaml:"default_datasource,omitempty"`
+	Datasources       map[string]DruidDatasourceSchema `yaml:"datasources"`
 }
 
 type DruidDatasourceSchema struct {

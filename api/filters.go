@@ -47,6 +47,9 @@ func GetDimensionValues(cfg *auth.Config, druidCfg *config.DruidConfig) http.Han
 			return
 		}
 
+		if filterReq.Datasource == "" && druidCfg.DefaultDatasource != "" {
+			filterReq.Datasource = druidCfg.DefaultDatasource
+		}
 		if filterReq.Dimension == "" || filterReq.Datasource == "" {
 			http.Error(w, "Dimension and Datasource are required", http.StatusBadRequest)
 			return

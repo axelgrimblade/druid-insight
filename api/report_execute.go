@@ -33,9 +33,14 @@ func ReportExecuteHandler(cfg *auth.Config, users *auth.UsersFile, druidCfg *con
 		}
 		datasource, _ := payload["datasource"].(string)
 		if datasource == "" {
-			http.Error(w, "Datasource missing", http.StatusBadRequest)
-			accessLogger.Write("EXECUTE_FAIL user=" + username + " missing_datasource")
-			return
+			if druidCfg.DefaultDatasource != "" {
+				datasource = druidCfg.DefaultDatasource
+				payload["datasource"] = datasource
+			} else {
+				http.Error(w, "Datasource missing", http.StatusBadRequest)
+				accessLogger.Write("EXECUTE_FAIL user=" + username + " missing_datasource")
+				return
+			}
 		}
 		problems := auth.CheckRights(payload, druidCfg, datasource, isAdmin)
 		if len(problems) > 0 {
