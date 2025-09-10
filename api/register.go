@@ -5,6 +5,7 @@ import (
 	"druid-insight/config"
 	"druid-insight/logging"
 	"net/http"
+	"os"
 )
 
 func RegisterHandlers(cfg *auth.Config, users *auth.UsersFile, druidCfg *config.DruidConfig, accessLogger, loginLogger, reportLogger *logging.Logger) {
@@ -14,6 +15,13 @@ func RegisterHandlers(cfg *auth.Config, users *auth.UsersFile, druidCfg *config.
 	http.HandleFunc("/api/reports/status", withCORS(ReportStatusHandler(cfg)))
 	http.HandleFunc("/api/reports/download", withCORS(DownloadReportCSV(cfg)))
 	http.HandleFunc("/api/filters/values", withCORS(GetDimensionValues(cfg, druidCfg)))
+
+	// Register /api/doc endpoint only if configured and file exists
+	if druidCfg.DocFile != "" {
+		if stat, err := os.Stat(druidCfg.DocFile); err == nil && !stat.IsDir() {
+			http.HandleFunc("/api/doc", withCORS(DocDownloadHandler(cfg, druidCfg.DocFile)))
+		}
+	}
 }
 
 func StartServer(listenAddr string) error {
