@@ -11,7 +11,6 @@ import (
 type DruidConfig struct {
 	HostURL           string                           `yaml:"host_url"`
 	DefaultDatasource string                           `yaml:"default_datasource,omitempty"`
-	DocFile           string                           `yaml:"doc_file,omitempty"`
 	Datasources       map[string]DruidDatasourceSchema `yaml:"datasources"`
 }
 

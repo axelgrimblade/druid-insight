@@ -17,9 +17,9 @@ func RegisterHandlers(cfg *auth.Config, users *auth.UsersFile, druidCfg *config.
 	http.HandleFunc("/api/filters/values", withCORS(GetDimensionValues(cfg, druidCfg)))
 
 	// Register /api/doc endpoint only if configured and file exists
-	if druidCfg.DocFile != "" {
-		if stat, err := os.Stat(druidCfg.DocFile); err == nil && !stat.IsDir() {
-			http.HandleFunc("/api/doc", withCORS(DocDownloadHandler(cfg, druidCfg.DocFile)))
+	if cfg.DocFile != "" {
+		if stat, err := os.Stat(cfg.DocFile); err == nil && !stat.IsDir() {
+			http.HandleFunc("/api/doc", withCORS(DocDownloadHandler(cfg, cfg.DocFile)))
 		}
 	}
 }

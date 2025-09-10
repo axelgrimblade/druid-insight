@@ -41,6 +41,7 @@ type Config struct {
 	} `yaml:"auth"`
 	Context         map[string]string `yaml:"context"`            // contexte global pour les requêtes Druid{
 	MaxFileAgeHours int               `yaml:"max_file_age_hours"` // durée max en heures
+	DocFile         string            `yaml:"doc_file,omitempty"`
 }
 
 type UsersFile struct {
