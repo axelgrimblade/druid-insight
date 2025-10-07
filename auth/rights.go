@@ -1,6 +1,8 @@
 package auth
 
-import "druid-insight/config"
+import (
+	"druid-insight/config"
+)
 
 func CheckRights(payload map[string]interface{}, druidCfg *config.DruidConfig, datasource string, isAdmin bool) []string {
 	problems := []string{}
@@ -31,6 +33,37 @@ func CheckRights(payload map[string]interface{}, druidCfg *config.DruidConfig, d
 				problems = append(problems, "metric:"+metric+":unknown")
 			} else if f.Reserved && !isAdmin {
 				problems = append(problems, "metric:"+metric+":forbidden")
+			}
+		}
+	}
+	if filters, ok := payload["filters"].([]interface{}); ok {
+		for _, filterRaw := range filters {
+			filter, _ := filterRaw.(map[string]interface{})
+			if dimensionRaw, exists := filter["dimension"]; exists {
+				dimension, _ := dimensionRaw.(string)
+				if dimension == "time" {
+					// La dimension "time" est TOUJOURS autorisée
+					continue
+				}
+				f, ok := ds.Dimensions[dimension]
+				if !ok {
+					problems = append(problems, "filter_dimension:"+dimension+":unknown")
+				} else if f.Reserved && !isAdmin {
+					problems = append(problems, "filter_dimension:"+dimension+":forbidden")
+				}
+			} else {
+				problems = append(problems, "filter_missing_dimension")
+			}
+			if valueRaw, exists := filter["value"]; exists {
+				_, ok := valueRaw.(string)
+				if !ok {
+					_, ok := valueRaw.([]interface{})
+					if !ok {
+						problems = append(problems, "filter_value_invalid")
+					}
+				}
+			} else {
+				problems = append(problems, "filter_missing_value")
 			}
 		}
 	}
