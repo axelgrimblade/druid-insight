@@ -30,7 +30,7 @@ func BuildAggsAndPostAggs(metrics []string, ds config.DruidDatasourceSchema) (ag
 				if !ok || base.Druid == "" {
 					return nil, nil, fmt.Errorf("metric %s used in formula %s not found", f, m)
 				}
-				aggName := "sum_" + f // convention pour sum(x)
+				aggName := "sum_" + base.Druid // use Druid field name for aggregation
 				if !aggsSet[aggName] {
 					aggs = append(aggs, map[string]interface{}{
 						"type":      "doubleSum", // TODO: rendre dynamique selon métrique
@@ -40,7 +40,7 @@ func BuildAggsAndPostAggs(metrics []string, ds config.DruidDatasourceSchema) (ag
 					aggsSet[aggName] = true
 				}
 			}
-			postAggs = append(postAggs, NodeToDruidPostAgg(m, node))
+			postAggs = append(postAggs, NodeToDruidPostAgg(m, node, ds.Metrics))
 		} else if mf.Druid != "" {
 			if !aggsSet[m] {
 				aggs = append(aggs, map[string]interface{}{

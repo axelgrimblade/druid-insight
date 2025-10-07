@@ -1,6 +1,7 @@
 package druid
 
 import (
+	"druid-insight/config"
 	"errors"
 	"strconv"
 	"unicode"
@@ -143,7 +144,7 @@ func CollectLeafFields(node *FormulaNode) []string {
 }
 
 // Convertit l'arbre de formule en postAggregation Druid (map[string]interface{})
-func NodeToDruidPostAgg(name string, node *FormulaNode) map[string]interface{} {
+func NodeToDruidPostAgg(name string, node *FormulaNode, fields map[string]config.DruidField) map[string]interface{} {
 	if node.Op == "" {
 		if _, err := strconv.ParseFloat(node.Value, 64); err == nil {
 			return map[string]interface{}{
@@ -151,16 +152,23 @@ func NodeToDruidPostAgg(name string, node *FormulaNode) map[string]interface{} {
 				"value": mustParseFloat(node.Value),
 			}
 		}
+		druidName := node.Value
+		if f, ok := fields[node.Value]; ok && f.Druid != "" {
+			druidName = f.Druid
+		}
 		return map[string]interface{}{
 			"type":      "fieldAccess",
-			"fieldName": node.Value,
+			"fieldName": druidName,
 		}
 	}
 	if node.Op == "func" && node.Value == "sum" {
-		// On suppose que l'agg Druid s'appelle "sum_<champ>"
+		druidName := node.Left.Value
+		if f, ok := fields[node.Left.Value]; ok && f.Druid != "" {
+			druidName = f.Druid
+		}
 		return map[string]interface{}{
 			"type":      "fieldAccess",
-			"fieldName": "sum_" + node.Left.Value,
+			"fieldName": "sum_" + druidName,
 		}
 	}
 	fnMap := map[string]string{
@@ -171,8 +179,8 @@ func NodeToDruidPostAgg(name string, node *FormulaNode) map[string]interface{} {
 		"name": name,
 		"fn":   fnMap[node.Op],
 		"fields": []interface{}{
-			NodeToDruidPostAgg("", node.Left),
-			NodeToDruidPostAgg("", node.Right),
+			NodeToDruidPostAgg("", node.Left, fields),
+			NodeToDruidPostAgg("", node.Right, fields),
 		},
 	}
 }
