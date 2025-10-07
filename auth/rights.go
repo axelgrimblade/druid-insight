@@ -54,7 +54,7 @@ func CheckRights(payload map[string]interface{}, druidCfg *config.DruidConfig, d
 			} else {
 				problems = append(problems, "filter_missing_dimension")
 			}
-			if valueRaw, exists := filter["value"]; exists {
+			if valueRaw, exists := filter["values"]; exists {
 				_, ok := valueRaw.(string)
 				if !ok {
 					_, ok := valueRaw.([]interface{})
