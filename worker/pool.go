@@ -195,8 +195,17 @@ func ProcessRequest(req *ReportRequest, druidCfg *config.DruidConfig, logger *lo
 				if compareInterval != "" {
 					intervals = append(intervals, compareInterval)
 				}
+			} else {
+				logger.Write(fmt.Sprintf("[FAIL] id=%s bad dates format", req.ID))
+				return StatusError, nil, "", "", "Echec lecture des dates"
 			}
+		} else {
+			logger.Write(fmt.Sprintf("[FAIL] id=%s bad dates format", req.ID))
+			return StatusError, nil, "", "", "Format dates invalide"
 		}
+	} else {
+		logger.Write(fmt.Sprintf("[FAIL] id=%s missing dates", req.ID))
+		return StatusError, nil, "", "", "Paramètre dates manquant"
 	}
 
 	// 1. Retrouver la config de la datasource
