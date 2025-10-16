@@ -87,7 +87,7 @@ func ReportExecuteHandler(cfg *auth.Config, users *auth.UsersFile, druidCfg *con
 		worker.AddPendingRequest(req)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{"id": id})
-		accessLogger.Write("EXECUTE_OK user=" + username + " id=" + id)
+		accessLogger.Write("EXECUTE_OK user=" + username + " id=" + id + " query=" + jsonString(payload))
 	}
 }
 
