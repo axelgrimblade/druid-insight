@@ -42,8 +42,8 @@ func CheckRights(payload map[string]interface{}, druidCfg *config.DruidConfig, d
 			if dimensionRaw, exists := filter["dimension"]; exists {
 				dimension, _ := dimensionRaw.(string)
 				if dimension == "time" {
-					// La dimension "time" est TOUJOURS autorisée
-					continue
+					// La dimension "time" n'est pas autorisée dans les filtres
+					problems = append(problems, "filter_dimension:time:forbidden")
 				}
 				f, ok := ds.Dimensions[dimension]
 				if !ok {
