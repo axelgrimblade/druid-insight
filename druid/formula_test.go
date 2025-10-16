@@ -1,6 +1,7 @@
 package druid
 
 import (
+	"druid-insight/config"
 	"reflect"
 	"testing"
 )
@@ -96,15 +97,27 @@ func TestNodeToDruidPostAgg(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ParseFormula failed: %v", err)
 	}
-	postAgg := NodeToDruidPostAgg("cpm", node)
+	fields := map[string]config.DruidField{
+		"revenue":     {Druid: "revenue_druid"},
+		"impressions": {Druid: "impressions_druid"},
+	}
+	postAgg := NodeToDruidPostAgg("cpm", node, fields)
 	typ, ok := postAgg["type"].(string)
 	if !ok {
 		t.Fatalf("NodeToDruidPostAgg: missing type field")
 	}
 	if typ == "arithmetic" {
-		fields, ok := postAgg["fields"].([]interface{})
-		if !ok || len(fields) != 2 {
+		fieldsArr, ok := postAgg["fields"].([]interface{})
+		if !ok || len(fieldsArr) != 2 {
 			t.Errorf("NodeToDruidPostAgg: expected 2 fields for arithmetic, got %v", postAgg["fields"])
+		}
+		left := fieldsArr[0].(map[string]interface{})
+		right := fieldsArr[1].(map[string]interface{})
+		if left["fieldName"] != "revenue_druid" {
+			t.Errorf("Expected left fieldName 'revenue_druid', got %v", left["fieldName"])
+		}
+		if right["fieldName"] != "impressions_druid" {
+			t.Errorf("Expected right fieldName 'impressions_druid', got %v", right["fieldName"])
 		}
 	} else if typ == "fieldAccess" {
 		// OK, nothing to check
@@ -127,13 +140,17 @@ func TestParseFormula_SumFunction(t *testing.T) {
 	if node.Right.Op != "func" || node.Right.Value != "sum" {
 		t.Errorf("Expected right func 'sum', got %+v", node.Right)
 	}
-	postAgg := NodeToDruidPostAgg("cpm", node)
+	fields := map[string]config.DruidField{
+		"revenue": {Druid: "revenue_druid"},
+		"imps":    {Druid: "imps_druid"},
+	}
+	postAgg := NodeToDruidPostAgg("cpm", node, fields)
 	left := postAgg["fields"].([]interface{})[0].(map[string]interface{})
 	right := postAgg["fields"].([]interface{})[1].(map[string]interface{})
-	if left["fieldName"] != "sum_revenue" {
-		t.Errorf("Expected left fieldName 'sum_revenue', got %v", left["fieldName"])
+	if left["fieldName"] != "sum_revenue_druid" {
+		t.Errorf("Expected left fieldName 'sum_revenue_druid', got %v", left["fieldName"])
 	}
-	if right["fieldName"] != "sum_imps" {
-		t.Errorf("Expected right fieldName 'sum_imps', got %v", right["fieldName"])
+	if right["fieldName"] != "sum_imps_druid" {
+		t.Errorf("Expected right fieldName 'sum_imps_druid', got %v", right["fieldName"])
 	}
 }
