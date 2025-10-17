@@ -11,6 +11,7 @@ import (
 	"log"
 	"net/http"
 	"slices"
+	"strings"
 )
 
 // BuildAggsAndPostAggs analyse la liste des metrics demandées,
@@ -200,7 +201,7 @@ func ConvertFiltersToDruidDimFilter(filters []interface{}, ds config.DruidDataso
 		var svalues []string
 		for _, v := range values {
 			if sv, ok := v.(string); ok {
-				svalues = append(svalues, sv)
+				svalues = append(svalues, strings.ToLower(sv))
 			}
 		}
 		field := ds.Dimensions[dimKey]
